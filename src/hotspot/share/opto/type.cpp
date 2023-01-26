@@ -4527,8 +4527,8 @@ template<class T> TypePtr::MeetResult TypePtr::meet_instptr(PTR& ptr, InterfaceS
                                                             ciKlass*& res_klass, bool& res_xk, bool& res_flatten_array) {
   ciKlass* this_klass = this_type->klass();
   ciKlass* other_klass = other_type->klass();
-  bool this_flatten_array = this_klass->flatten_array();
-  bool other_flatten_array = other_klass->flatten_array();
+  bool this_flatten_array = this_type->flatten_array();
+  bool other_flatten_array = other_type->flatten_array();
   bool this_flatten_array_orig = this_flatten_array;
   bool other_flatten_array_orig = other_flatten_array;
   bool this_xk = this_type->klass_is_exact();
