@@ -814,45 +814,6 @@ public:
 #endif
 };
 
-// TODO 8293800 Remove
-//------------------------------TypeValue---------------------------------------
-// Class of Inline Type Types
-class TypeInlineType : public Type {
-private:
-  ciInlineKlass* _vk;
-  bool _larval;
-
-protected:
-  TypeInlineType(ciInlineKlass* vk, bool larval)
-    : Type(InlineType),
-      _vk(vk), _larval(larval) {
-  }
-
-public:
-  static const TypeInlineType* make(ciInlineKlass* vk, bool larval = false);
-  virtual ciInlineKlass* inline_klass() const { return _vk; }
-  bool larval() const { return _larval; }
-
-  virtual bool eq(const Type* t) const;
-  virtual int  hash() const;             // Type specific hashing
-  virtual bool singleton(void) const;    // TRUE if type is a singleton
-  virtual bool empty(void) const;        // TRUE if type is vacuous
-
-  virtual const Type* xmeet(const Type* t) const;
-  virtual const Type* xdual() const;     // Compute dual right now.
-
-  virtual bool would_improve_type(ciKlass* exact_kls, int inline_depth) const { return false; }
-  virtual bool would_improve_ptr(ProfilePtrKind ptr_kind) const { return false; }
-
-  virtual bool maybe_null() const { return false; }
-
-  static const TypeInlineType* BOTTOM;
-
-#ifndef PRODUCT
-  virtual void dump2(Dict &d, uint, outputStream* st) const; // Specialized per-Type dumping
-#endif
-};
-
 //------------------------------TypeVect---------------------------------------
 // Class of Vector Types
 class TypeVect : public Type {
@@ -954,6 +915,7 @@ public:
 class TypePtr : public Type {
   friend class TypeNarrowPtr;
   friend class Type;
+  friend class TypeInlineType;
 protected:
   class InterfaceSet {
   private:
@@ -2097,6 +2059,48 @@ public:
 #endif
   // Convenience common pre-built types.
 };
+
+// TODO 8293800 Remove
+//------------------------------TypeValue---------------------------------------
+// Class of Inline Type Types
+class TypeInlineType : public Type {
+private:
+  ciInlineKlass* _vk;
+  TypePtr::InterfaceSet _interfaces;
+  bool _larval;
+
+protected:
+  TypeInlineType(ciInlineKlass* vk, TypePtr::InterfaceSet interfaces, bool larval)
+          : Type(InlineType),
+            _vk(vk), _interfaces(interfaces), _larval(larval) {
+  }
+
+public:
+  static const TypeInlineType* make(ciInlineKlass* vk, bool larval = false);
+  virtual ciInlineKlass* inline_klass() const { return _vk; }
+  TypePtr::InterfaceSet interfaces() const { return _interfaces; }
+  bool larval() const { return _larval; }
+
+  virtual bool eq(const Type* t) const;
+  virtual int  hash() const;             // Type specific hashing
+  virtual bool singleton(void) const;    // TRUE if type is a singleton
+  virtual bool empty(void) const;        // TRUE if type is vacuous
+
+  virtual const Type* xmeet(const Type* t) const;
+  virtual const Type* xdual() const;     // Compute dual right now.
+
+  virtual bool would_improve_type(ciKlass* exact_kls, int inline_depth) const { return false; }
+  virtual bool would_improve_ptr(ProfilePtrKind ptr_kind) const { return false; }
+
+  virtual bool maybe_null() const { return false; }
+
+  static const TypeInlineType* BOTTOM;
+
+#ifndef PRODUCT
+  virtual void dump2(Dict &d, uint, outputStream* st) const; // Specialized per-Type dumping
+#endif
+};
+
 
 //------------------------------accessors--------------------------------------
 inline bool Type::is_ptr_to_narrowoop() const {
