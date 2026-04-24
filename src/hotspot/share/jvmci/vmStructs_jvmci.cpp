@@ -837,9 +837,9 @@
   declare_constant(ObjectMonitor::ANONYMOUS_OWNER)                        \
   declare_constant(ObjectMonitor::DEFLATER_MARKER)                        \
                                                                           \
-  declare_constant(ReceiverTypeData::receiver_type_row_cell_count)        \
-  declare_constant(ReceiverTypeData::receiver0_offset)                    \
-  declare_constant(ReceiverTypeData::count0_offset)                       \
+  declare_constant(MegamorphicTypeData::receiver_type_row_cell_count)     \
+  declare_constant(MegamorphicTypeData::receiver0_offset)                 \
+  declare_constant(MegamorphicTypeData::count0_offset)                    \
                                                                           \
   declare_constant(vmIntrinsics::_invokeBasic)                            \
   declare_constant(vmIntrinsics::_linkToVirtual)                          \
